@@ -1,0 +1,13 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  File "TILE002.ECW"
+  Type "RASTER"
+  (260000.00,450000.00) (0,0) Label "Pt 1"
+  (280000.00,450000.00) (9434,0) Label "Pt 2"
+  (280000.00,430000.00) (9434,9434) Label "Pt 3"
+  (260000.00,430000.00) (0,9434) Label "Pt 4"
+  Coordsys Earth Projection 8, 42,"m",-8.000000,53.500000,1.000035, 200000.000000,250000.000000
+  Units "m"
