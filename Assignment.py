@@ -1,8 +1,16 @@
-# This is a sample Python script.
+# GIS Practical 2 Script.
 
-# Press Shift+F10 to execute it or replace it with your code.
+# Import modules required for the practical.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
+import pandas as pd
+import geopandas as gpd
+ from shapely.geometry import Point, LineString, Polygon
+import matplotlib.pyplot as plt
+ from cartopy.feature import ShapelyFeature
+import cartopy.crs as ccrs
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
+import rasterio as rio
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
