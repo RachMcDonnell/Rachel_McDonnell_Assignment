@@ -10,7 +10,7 @@
  Creating a Digital Terrain Model"""
 
 # Import modules required for the practical.
-#
+
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point, LineString, Polygon
@@ -21,8 +21,15 @@ import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 import rasterio as rio
 import numpy as np
-#
-        
+
+# Exercise 1: Load practical data and adding and symbolising data
+outline = gpd.read_file('data_files/NI_outline.shp')
+roads = gpd.read_file('data_files/NI_roads.shp')
+settlements_poly = gpd.read_file('data_files/settlements_poly.shp')
+gazeteer = gpd.read_file('data_files/Gazeteer.shp')
+binvenagh_250k = rio.open('data_files/Binevenagh_250k.tif')
+
+
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
