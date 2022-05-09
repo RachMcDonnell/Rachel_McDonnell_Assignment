@@ -11,7 +11,6 @@
 
 # Import modules required for the practical.
 
-import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point, LineString, Polygon
 import matplotlib.pyplot as plt
@@ -46,8 +45,12 @@ outline_feature = ShapelyFeature(outline['geometry'], myCRS, edgecolor='k', face
 xmin, ymin, xmax, ymax = outline.total_bounds
 ax.add_feature(outline_feature)  # add the features we've created to the map.
 
-#  add the Northern Ireland Roads using cartopy's ShapelyFeature
-outline_feature = ShapelyFeature(outline['geometry'], myCRS, edgecolor='k', facecolor='w')
+#  add the NI_Roads using cartopy's ShapelyFeature
+Roads = ShapelyFeature(roads['geometry'], myCRS, edgecolor='k', facecolor='w')
+
+# get the number of unique road classes we have in the dataset
+road_class = len(roads.Road_class.unique())
+print('Number of unique features: {}'.format(road_class))
 
 
 def clip_to_study_area(name):
@@ -61,13 +64,13 @@ def clip_to_study_area(name):
  Each layer must be clipped to the 'Study Area' Shapefile"""
 
 # Exercise 2 Clipping Map Layers:
-study_area = gdp.readfile('data_files/study_area_box.shp')  # Add map layer called Study Area Box
+study_area = gpd.read_file('data_files/study_area_box.shp')  # Add map layer called Study Area Box
 
 # Check both layers are the same CRS
 assert isinstance(roads.crs, object)
 print(study_area.crs == roads.crs)
 # Clip roads layer to the Study Area Box
-roads_clip = gdp.clip(roads, study_area)
+roads_clip = gpd.clip(roads, study_area)
 
 if __name__ == '__main__':
     print_hi('PyCharm')
