@@ -1,16 +1,24 @@
 """Assignment script using an excerpt from EGM711 GIS Practical 2.
 
- Practical 2 aims to focus on displaying. collating, creating and querying data in ArcGIS.
+ Produce a map showing the key features of the area surrounding a proposed motorbike track in Binevenagh.
+
  Topics include:
  Adding, symbolising and navigating spatial data
  Clipping large datasets to an area of interest
  Creating a points shapefile from tabular data
- Accessing and selecting attribute and spatial data through attribute and locational queries
- Creating a Digital Terrain Model
- Creating a map layout"""
+ Creating a map layout illustrating the general context and environment of the surrounding area including:
+    -Roads
+    -Buildings
+    -Settlements
+    -Motorbike Track
+    -Rivers
+    -Areas of outstanding Natural Beauty (AONB'S)
+    -Areas of Special Scientific Interest (ASSI's)
+    -Background Raster Mapping"""
 
 # Import modules required for the practical.
 
+import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point, LineString, Polygon
 import matplotlib.pyplot as plt
@@ -21,7 +29,7 @@ import matplotlib.lines as mlines
 import rasterio as rio
 import numpy as np
 
-# Part 1: Copying practical data and adding and symbolising data
+# Part 1: Load practical data
 
 # Download Practical 2 data from the data files folder and load data here:
 outline = gpd.read_file('data_files/NI_outline.shp')
@@ -30,8 +38,11 @@ settlements_poly = gpd.read_file('data_files/settlements_poly.shp')
 gazeteer = gpd.read_file('data_files/Gazeteer.shp')
 binevenagh_250k = rio.open('data_files/Binevenagh_250k.tif')
 study_area = gpd.read_file('data_files/study_area_box.shp')
+AONB_boundary = gpd.read_file('data_files/AONB.shp')
+ASSI_boundary = gpd.read_file('data_files/ASSI.shp')
+Buildings = gpd.read_file('data_files/Binevenagh Pointer.dbf')
 
-# Part 2 :Add Layers to current map and updating symbology:
+# Part 2 :Add data to map and adding and symbolising data:
 
 # create a figure of size 10x10 (representing the page size in inches)
 myFig = plt.figure(figsize=(10, 10))
@@ -54,6 +65,14 @@ ax.add_feature(study_area_outline) # add the features we've created to the map.
 ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS)  # because total_bounds gives output as xmin, ymin, xmax, ymax,
 # but set_extent takes xmin, xmax, ymin, ymax, we re-order the coordinates here.
 
+# Add the AONB layer using cartopy's ShapelyFeature. AONB shows the boundaries of Areas of outstanding natural beauty
+AONB_boundary= ShapelyFeature(AONB_boundary['geometry'], myCRS, edgecolor='tan', facecolor='tan', linewidth=1,)
+ax.add_feature(AONB_boundary) # add the features we've created to the map
+
+# Add the ASSI layer using cartopy's ShapelyFeature. ASSI shows the boundaries of Areas of Special Scientific Interest
+ASSI_boundary = ShapelyFeature(ASSI_boundary['geometry'], myCRS, edgecolor='sandybrown', facecolor='sandybrown', linewidth=1,)
+ax.add_feature(ASSI_boundary) # add the features we've created to the map
+
 #  add the NI_Roads using cartopy's ShapelyFeature
 Roads = ShapelyFeature(roads['geometry'], myCRS, edgecolor='k', facecolor='w')
 
@@ -70,7 +89,7 @@ print(road_class_names)
 
 # next, add the road classes to the map using the colors that we've picked.
 # here, we're iterating over the unique values in the 'Road_class' field.
-# we're also setting the edge color to be black, with a line width of 0.5 pt.
+# we're also setting the edge color to be black, with a line width of 1pt.
 
 for i, name in enumerate(road_class_names):
     feat = ShapelyFeature(roads['geometry'][roads['Road_class'] == name], myCRS,
@@ -80,7 +99,14 @@ for i, name in enumerate(road_class_names):
                           alpha=0.25)
     ax.add_feature(feat)
 
+# Add the settlements_poly layer using cartopy's ShapelyFeature. Settlments_poly shows the boundaries of built up areas.
+Settlements = ShapelyFeature(settlements_poly['geometry'], myCRS, edgecolor='darkolivegreen', facecolor='green')
+ax.add_feature(Settlements) # add the features we've created to the map
 plt.show()
+
+# Part 4 Creating and displaying point data (Track Centre)
+Track_centre = Point(638049.7221,6112938.0385)
+print(Track_centre)
 
 """Clips layers to the Study Area.
 
@@ -103,13 +129,17 @@ plt.show()
 
 
 
-# Exercise 3 Creating and applying a layer file
-# Exercise 4 Obtaining Map layers online and clipping them to the study area
-# Exercise 5 Symbolising Quantities (census data)
-# Exercise 6 Creating and displaying point data and saving to a shapefile (Track Centre)
-# Exercise 7 Displaying point data and saving to a shapefile (Buildings)
-# Adding and displaying a raster
-# Exercise 14 Create a Map Layout
+# Part 5 Displaying point data from a database (Buildings)
+
+
+# Part 6 Adding and displaying a raster for Background mapping
+# Part 7 Creating a map:
+# Adding legends
+# Adding scale bar
+# Add labels
+
+
+
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
