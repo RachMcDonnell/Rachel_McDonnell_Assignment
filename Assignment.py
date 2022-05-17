@@ -5,13 +5,12 @@
  Topics include:
  Adding, symbolising and navigating spatial data
  Clipping large datasets to an area of interest
- Creating a points shapefile from tabular data
+ Displaying a point data and editing symbology
  Creating a map layout illustrating the general context and environment of the surrounding area including:
     -Roads
     -Buildings
     -Settlements
     -Motorbike Track
-    -Rivers
     -Areas of outstanding Natural Beauty (AONB'S)
     -Areas of Special Scientific Interest (ASSI's)
     -Background Raster Mapping"""
@@ -20,6 +19,9 @@
 
 import pandas as pd
 import geopandas as gpd
+from geopandas import GeoDataFrame
+from pandas import DataFrame
+from pandas.io.parsers import TextFileReader
 from shapely.geometry import Point, LineString, Polygon
 import matplotlib.pyplot as plt
 from cartopy.feature import ShapelyFeature
@@ -40,9 +42,10 @@ binevenagh_250k = rio.open('data_files/Binevenagh_250k.tif')
 study_area = gpd.read_file('data_files/study_area_box.shp')
 AONB_boundary = gpd.read_file('data_files/AONB.shp')
 ASSI_boundary = gpd.read_file('data_files/ASSI.shp')
-Buildings = gpd.read_file('data_files/Binevenagh Pointer.dbf')
+Buildings = gpd.read_file('data_files/Binevenagh_buildings.shp')
+Track_centre = gpd.read_file('data_files/track_centre.shp')
 
-# Part 2 :Add data to map and adding and symbolising data:
+# Part 2 :Add Polygon data to map and adding and symbolising data:
 
 # create a figure of size 10x10 (representing the page size in inches)
 myFig = plt.figure(figsize=(10, 10))
@@ -59,19 +62,20 @@ ax.add_feature(outline_feature)  # add the features we've created to the map.
 # Add Study Area Box, Display it with a wide outline and no fill colour:
 study_area_outline = ShapelyFeature(study_area['geometry'], myCRS, edgecolor='black', facecolor='none', linewidth=1)
 xmin, ymin, xmax, ymax = study_area.total_bounds
-ax.add_feature(study_area_outline) # add the features we've created to the map.
+ax.add_feature(study_area_outline)  # add the features we've created to the map.
 
 # using the boundary of the shapefile features, zoom the map to our area of interest
 ax.set_extent([xmin, xmax, ymin, ymax], crs=myCRS)  # because total_bounds gives output as xmin, ymin, xmax, ymax,
 # but set_extent takes xmin, xmax, ymin, ymax, we re-order the coordinates here.
 
 # Add the AONB layer using cartopy's ShapelyFeature. AONB shows the boundaries of Areas of outstanding natural beauty
-AONB_boundary= ShapelyFeature(AONB_boundary['geometry'], myCRS, edgecolor='tan', facecolor='tan', linewidth=1,)
-ax.add_feature(AONB_boundary) # add the features we've created to the map
+AONB_boundary = ShapelyFeature(AONB_boundary['geometry'], myCRS, edgecolor='tan', facecolor='tan', linewidth=1, )
+ax.add_feature(AONB_boundary)  # add the features we've created to the map
 
 # Add the ASSI layer using cartopy's ShapelyFeature. ASSI shows the boundaries of Areas of Special Scientific Interest
-ASSI_boundary = ShapelyFeature(ASSI_boundary['geometry'], myCRS, edgecolor='sandybrown', facecolor='sandybrown', linewidth=1,)
-ax.add_feature(ASSI_boundary) # add the features we've created to the map
+ASSI_boundary = ShapelyFeature(ASSI_boundary['geometry'], myCRS, edgecolor='sandybrown', facecolor='sandybrown',
+                               linewidth=1, )
+ax.add_feature(ASSI_boundary)  # add the features we've created to the map
 
 #  add the NI_Roads using cartopy's ShapelyFeature
 Roads = ShapelyFeature(roads['geometry'], myCRS, edgecolor='k', facecolor='w')
@@ -101,45 +105,26 @@ for i, name in enumerate(road_class_names):
 
 # Add the settlements_poly layer using cartopy's ShapelyFeature. Settlments_poly shows the boundaries of built up areas.
 Settlements = ShapelyFeature(settlements_poly['geometry'], myCRS, edgecolor='darkolivegreen', facecolor='green')
-ax.add_feature(Settlements) # add the features we've created to the map
+ax.add_feature(Settlements)  # add the features we've created to the map
+
+# Displaying point data (Binevenagh Buildings)
+# Add Track Centre
+# ShapelyFeature creates a polygon, so for point data we can just use ax.plot()
+Track_Centre = ax.plot(Track_centre.geometry.x, Track_centre.geometry.y, 'D', color='red', ms=6, transform=myCRS)
+
+# Add Binevenagh Buildings to map
+# This layer is derived from a pointer database of addresses of every building in Northern Ireland
+Buildings = ax.plot(Buildings.geometry.x, Buildings.geometry.y, '.', color='0.1', ms=5, transform=myCRS)
+
+# Add Gazeteer to map; this shows settlements as a series of points and includes smaller settlements
+gazeteer = ax.plot(gazeteer.geometry.x, gazeteer.geometry.y, '^', color='blue', ms=7, transform=myCRS)
 plt.show()
-
-# Part 4 Creating and displaying point data (Track Centre)
-Track_centre = Point(638049.7221,6112938.0385)
-print(Track_centre)
-
-"""Clips layers to the Study Area.
-
- Each layer must be clipped to the 'Study Area' Shapefile"""
-
-
-# Part 3: Clipping Map Layers to the study area:
-def clip_to_study_area(name):
-    clipped = gpd.clip(name,study_area)
-    clipped_gdf=gpd.Geodataframe(pd.clipped)
-
-# Check both layers are the same CRS
-assert isinstance(roads.crs, object)
-print(study_area.crs == roads.crs)
-
-# Clip roads layer to the Study Area Box
-roads_clipped = roads.clip(study_area_outline)
-ax.add_feature(roads_clipped)
-plt.show()
-
-
-
-# Part 5 Displaying point data from a database (Buildings)
-
 
 # Part 6 Adding and displaying a raster for Background mapping
 # Part 7 Creating a map:
 # Adding legends
 # Adding scale bar
 # Add labels
-
-
-
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
