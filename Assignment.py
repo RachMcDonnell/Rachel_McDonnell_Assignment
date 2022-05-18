@@ -1,12 +1,12 @@
-"""Assignment script using an exercise from EGM711 GIS Practical 2.
+"""Assignment script using exercise 14. from EGM711 Principles of GIS Practical 2.
 
  Produce a map showing the key features of the area surrounding the proposed motorbike track in Binevenagh.
 
  Topics include:
- Part 1:Adding, symbolising and navigating spatial data
- Part 2:Displaying polygon data and editing symbology
- Part 3:Displaying point data and editing symbology
- Part 4:Creating a map layout-
+ Adding, symbolising and navigating spatial data
+ Displaying polygon data and editing symbology
+ Displaying point data and editing symbology
+ Creating a map layout-
     Illustrate the general context and environment of the surrounding area including:
     -Roads
     -Settlement Boundaries (Towns)
@@ -16,7 +16,7 @@
     -Areas of Outstanding Natural Beauty (AONB'S)
     -Areas of Special Scientific Interest (ASSI's)"""
 
-# Import modules required for the practical.
+# 1.Import modules
 
 import pandas as pd
 import geopandas as gpd
@@ -40,6 +40,7 @@ def generate_handles(labels, colors, edge='k', alpha=1):
         handles.append(mpatches.Rectangle((0, 0), 1, 1, facecolor=colors[i % lc], edgecolor=edge, alpha=alpha))
     return handles
 
+# 2. Create Functions
 
 """The 'generate_handles' function will generate legend items required when creating a legend for the map layout.
 
@@ -92,9 +93,9 @@ script.
     location is center of the scalebar in axis coordinates.
     (ie. 0.5 is the middle of the plot)."""
 
-# Part 1: Adding, symbolising and navigating spatial data
+# Adding, symbolising and navigating spatial data
 
-# Load Practical_2 data from the data_files folder:
+# 3. Load data from the data_files folder:
 outline = gpd.read_file('data_files/NI_outline.shp')
 roads = gpd.read_file('data_files/NI_roads.shp')
 settlements_poly = gpd.read_file('data_files/settlements_poly.shp')
@@ -105,7 +106,7 @@ Buildings = gpd.read_file('data_files/Binevenagh_buildings.shp')
 Track_centre = gpd.read_file('data_files/track_centre.shp')
 Binevenagh_gazeteer = gpd.read_file('data_files/Binevenagh_Gazeteer.shp')
 
-# Part 2 : Displaying polygon data and editing symbology
+# 4. Displaying polygon data and editing symbology
 
 # create a figure of size 10x10 (representing the page size in inches)
 myFig = plt.figure(figsize=(10, 10))
@@ -173,7 +174,7 @@ for i, row in Binevenagh_gazeteer.iterrows():
 Settlements = ShapelyFeature(settlements_poly['geometry'], myCRS, edgecolor='green', facecolor='green')
 ax.add_feature(Settlements)  # add the features we've created to the map
 
-# Part 3  Displaying point data and editing symbology
+# 5. Displaying point data and editing symbology
 
 # Add Track_centre to map:
 # This layer shows the location of the Motorbike track.
@@ -192,7 +193,7 @@ Buildings = ax.plot(Buildings.geometry.x, Buildings.geometry.y, '.', color='blac
 Binevenagh_gazeteer = ax.plot(Binevenagh_gazeteer.geometry.x, Binevenagh_gazeteer.geometry.y, '^', color='blue', ms=7,
                               transform=myCRS)
 
-# Part 4 Creating a map layout:
+# 6. Creating a map layout:
 
 # Adding a legend to the map layout:
 # Generate a list of handles for all datasets plotted to the map using the def function 'generate_handles':
