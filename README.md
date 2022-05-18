@@ -1,6 +1,7 @@
 # Rachel_McDonnell_Assignment
 Project_2022
 "This project is licensed under the terms of the MIT license."
+
 **Setup/Installation Instructions**
 The following describes the steps you need to take to use the code including a list of the main dependencies.
 Cloning the repository
